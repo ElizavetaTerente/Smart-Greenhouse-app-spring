@@ -1,0 +1,742 @@
+<!DOCTYPE html>
+<html data-ng-app="appHouse" lang="en">
+<!-- Include Required Prerequisites -->
+<script type="text/javascript" src="//cdn.jsdelivr.net/jquery/1/jquery.min.js"></script>
+<script type="text/javascript" src="//cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
+
+<!-- Include Date Range Picker -->
+<script type="text/javascript" src="//cdn.jsdelivr.net/bootstrap.daterangepicker/2/daterangepicker.js"></script>
+<link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/bootstrap.daterangepicker/2/daterangepicker.css" />
+<!-- Bootstrap CSS -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJOZ" crossorigin="anonymous">
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ENjdO4Dr2bkBIFxQpeoTz1HIcje39Wm4jDKdf19U8gI4ddQ3GYNS7NTKfAdVQSZe" crossorigin="anonymous"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.js"></script>
+<head>
+    <title>PlantHealth</title>
+    <script src="concreteHouse.js"></script>
+    <link rel="shortcut icon" href="../pics/logo.png" type="image/x-icon">
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+
+        #qrcode { visibility: hidden; }
+        @media print {
+            /* Sets print view with media query */
+            body * {
+                display: none;
+            }
+            #qrcode { visibility: visible; }
+            /* Sets body and elements in it to not display */
+            .print-area, .print-area * {
+                display: block;
+            }
+            /* Sets print area element and all its content to display */
+        }
+
+        .card {
+            margin: 0 auto; /* Added */
+            float: none; /* Added */
+            margin-bottom: 10px; /* Added */
+            margin-top: 10px; /* Added */
+            color: grey;
+        }
+
+        .table-wrapper {
+            max-height: 200px;
+            overflow: auto;
+        }
+
+        ::-webkit-scrollbar {
+            width: 10px;
+        }
+
+        /* Track */
+        ::-webkit-scrollbar-track {
+            background: #555;
+        }
+
+        /* Handle */
+        #scrollbar1::-webkit-scrollbar-thumb {
+            background: cornflowerblue;
+        }
+
+        #scrollbar2::-webkit-scrollbar-thumb {
+            background: #FFC20F;
+        }
+
+        #scrollbar3::-webkit-scrollbar-thumb {
+            background: saddlebrown;
+        }
+
+        /* Handle on hover */
+        ::-webkit-scrollbar-thumb:hover {
+            background: #888;
+        }
+
+        .nav > li > button:hover{
+            color:greenyellow;
+        }
+
+        .checkbox-lg .form-check-input{
+            top: .8rem;
+            scale: 1.4;
+            margin-right: 0.7rem;
+        }
+
+        .checkbox-lg .form-check-label {
+            padding-top: 13px;
+        }
+
+        .checkbox-lg .form-check-label-color {
+            color: green;
+        }
+        output{
+            width: 100%;
+            display: flex;
+            justify-content: flex-start;
+            flex-wrap: wrap;
+            gap: 15px;
+            position: relative;
+            border-radius: 5px;
+        }
+
+        output .image{
+            height: 150px;
+            border-radius: 5px;
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.15);
+            overflow: hidden;
+            position: relative;
+        }
+
+        output .image img{
+            height: 100%;
+            width: 100%;
+        }
+
+        output .image span {
+            position: absolute;
+            top: -4px;
+            right: 4px;
+            cursor: pointer;
+            font-size: 22px;
+            color: white;
+        }
+
+        output .image span:hover {
+            opacity: 0.8;
+        }
+
+        output .span--hidden{
+            visibility: hidden;
+        }
+
+        .modal-header{
+            background-color: #6c757d;
+        }
+        .modal-body{
+            background-color: #6c757d;
+        }
+
+    </style>
+    <script>
+        function goToHome(){
+            window.location.href = `${window.location.origin}/gardener/index.html`;
+        }
+        function goToAccesspoints(){
+            window.location.href = `${window.location.origin}/gardener/accesspoints.html`;
+        }
+    </script>
+</head>
+<header class="p-3 text-bg-dark" style="margin-bottom: 30px">
+    <div class="container">
+        <div class="d-flex flex-wrap align-items-center ">
+            <div class="d-flex align-items-center" style="margin-right: 20%">
+                <img src="../pics/logo.png" width="50" height="50" >
+                <h2 style="color: #0F8149;margin-left: 10px"> Plant Health</h2>
+            </div>
+            <ul class="nav nav-pills nav-fill gap-2 p-1 bg-secondary rounded-5 shadow-sm " id="pillNav2" role="tablist" style="--bs-nav-link-color: white; --bs-nav-pills-link-active-color: white; --bs-nav-pills-link-active-bg: #0F8149;">
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link rounded-5" id="Home-tab2" data-bs-toggle="tab" type="button" role="tab" aria-selected="false" onclick="goToHome()">My Houses</button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link rounded-5" id="Accesspoints-tab2" data-bs-toggle="tab" type="button" role="tab" aria-selected="false" onclick="goToAccesspoints()">Accesspoints</button>
+                </li>
+            </ul>
+
+            <div style="position:absolute; right:30px; margin-right: 40px">
+                <a href="/logout" class="btn btn-outline-light me-2" role="button">Log out</a>
+            </div>
+        </div>
+    </div>
+</header>
+<body class="p-5 mb-2 bg-dark text-white">
+<div class="container" data-ng-controller ="viewHouse">
+
+    <!-- haus-->
+    <div class="card bg-secondary text-white" style="width: 99%">
+        <div class="card-header">
+            <div class="d-flex justify-content-between align-items-center" style="display: inline-block">
+                <h5 style="display:inline-block;color: greenyellow">ID : {{ss.house.sensorStationId}}</h5>
+                <div>
+                    <h5 style="display:inline-block;">UUID : {{ss.house.universallyUniqueIdentifier}}</h5>
+                    <p ng-hide="ss.house.universallyUniqueIdentifier != null" style="display: inline-block">no uuid</p>
+                </div>
+                <div>
+                    <h5 style="display:inline-block;">Name : {{ss.house.sensorStationName}}</h5>
+                    <p ng-hide="ss.house.sensorStationName != null" style="display: inline-block">no name</p>
+                </div>
+                <div>
+                    <h5 style="display: inline-block">
+                        <cite >Accesspoint : </cite>
+                        <cite ng-if="accessible" style="color: greenyellow">Accessible</cite>
+                        <cite ng-if="!accessible" style="color: darkred">Not Accessible</cite>
+                    </h5>
+                </div>
+            </div>
+            <div class="d-flex justify-content-between align-items-center" style="display: inline-block;margin-top: 10px">
+                <div>
+                    <h5 style="display:inline-block;">Gardener(s) : </h5>
+                    <p ng-repeat="g in ss.house.managingUsers" style="display:inline-block;margin-right: 5px">
+                        •{{ g.username}}
+                    </p>
+
+                </div>
+                <!-- вот здесь при нажатии на эту кнопку должно появляться окно распечатки qr-->
+                <button id="printBtn" type="button" class="btn btn-success">print QR code</button>
+
+            </div>
+        </div>
+        <div class="card-body">
+            <!-- start-- -->
+            <!--1st row-->
+            <div class="row">
+                <div class="col-sm d-flex justify-content-center">
+                    <!-- starts of air card-->
+                    <div class="card bg-dark shadow py-2">
+                        <div class="card-body py-0">
+                            <div class="row no-gutters align-items-center">
+                                <div>
+                                    <h5 class="text-xs font-weight-bold text-uppercase mb-1" style="color: cornflowerblue">
+                                        Air Quality
+                                        <img src="../pics/air.png" width="50" height="50" style="margin-left: 40px">
+                                    </h5>
+                                    <h1 id = "airQualityValue" class="text-xs" style="color: grey">-</h1>
+                                    <div>
+                                        <div class="text-xs text-secondary" style="display: inline-block;margin-right: 5px">
+                                            Normal values:
+                                            <input id = "AIR_QUALITY_Min" style="border:none;background: transparent;width: 35px" type="text" value="{{limits.airQuality.min}}" readonly class="text-xs text-secondary">
+                                            -
+                                            <input id = "AIR_QUALITY_Max" style="border:none;background: transparent;width: 35px" type="text" value="{{limits.airQuality.max}}" readonly class="text-xs text-secondary">
+                                        </div>
+                                        <button id = "AIR_QUALITY_EditButton" type="button" class="btn btn-success btn-sm" style="display: inline-block;margin-bottom: 4px" ng-click="editNormalValues('AIR_QUALITY')">edit</button>
+                                        <td><button id = "AIR_QUALITY_SaveButton" style="display: none" type="button" class="btn btn-warning btn-sm" ng-click="saveNormalValues('AIR_QUALITY')">save</button></td>
+                                    </div>
+                                    <cite id = "airQualityAccess" style="color:red;text-align: right; display: block;margin-top: 10px">Not accessible</cite>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- of air card-->
+                </div>
+                <div class="col-sm d-flex justify-content-center">
+                    <!-- Light Quality Card-->
+                    <div class="card bg-dark shadow py-2">
+                        <div class="card-body py-0">
+                            <div class="row no-gutters align-items-center">
+                                <div>
+                                    <h5 class="text-xs font-weight-bold text-uppercase mb-1" style="color: #FFC20F">
+                                        Light Quality
+                                        <img src="../pics/sun.png" width="50" height="50" style="margin-left: 40px">
+                                    </h5>
+                                    <h1 id = "lightValue" class="text-xs" style="color: grey">-</h1>
+                                    <div>
+                                        <div class="text-xs text-secondary" style="display: inline-block;margin-right: 5px">
+                                            Normal values:
+                                            <input id="LIGHT_Min" style="border:none;background: transparent;width: 35px" type="text" value="{{limits.light.min}}" readonly class="text-xs text-secondary">
+                                            -
+                                            <input id="LIGHT_Max" style="border:none;background: transparent;width: 35px" type="text" value="{{limits.light.max}}" readonly class="text-xs text-secondary">
+                                        </div>
+                                        <button  id ="LIGHT_EditButton" type="button" class="btn btn-success btn-sm" style="display: inline-block;margin-bottom: 4px" ng-click="editNormalValues('LIGHT')">edit</button>
+                                        <td><button id ="LIGHT_SaveButton" style="display: none" type="button" class="btn btn-warning btn-sm" ng-click="saveNormalValues('LIGHT')">save</button></td>
+                                    </div>
+                                    <cite id = "lightAccess" style="color: red;text-align: right; display: block;margin-top: 10px">Not accessible</cite>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!--end of sun card-->
+                </div>
+                <div class="col-sm d-flex justify-content-center">
+                    <!-- Soil humidity Card-->
+                    <div class="card bg-dark shadow py-2">
+                        <div class="card-body py-0">
+                            <div class="row no-gutters align-items-center">
+                                <div>
+                                    <h5 class="text-xs font-weight-bold text-uppercase mb-1" style="color: saddlebrown">
+                                        Soil humidity
+                                        <img src="../pics/soil.png" width="50" height="50" style="margin-left: 40px">
+                                    </h5>
+                                    <h1 id = "soilHumidityValue" class="text-xs" style="color: grey">-</h1>
+                                    <div>
+                                        <div class="text-xs text-secondary" style="display: inline-block;margin-right: 5px">
+                                            Normal values:
+                                            <input id="SOIL_HUMIDITY_Min" style="border:none;background: transparent;width: 35px" type="text" value="{{limits.soilHumidity.min}}" readonly class="text-xs text-secondary">
+                                            -
+                                            <input id="SOIL_HUMIDITY_Max" style="border:none;background: transparent;width: 35px" type="text" value="{{limits.soilHumidity.max}}" readonly class="text-xs text-secondary">
+                                        </div>
+                                        <button id ="SOIL_HUMIDITY_EditButton" type="button" class="btn btn-success btn-sm" style="display: inline-block;margin-bottom: 4px" ng-click="editNormalValues('SOIL_HUMIDITY')">edit</button>
+                                        <td><button id ="SOIL_HUMIDITY_SaveButton" style="display: none" type="button" class="btn btn-warning btn-sm" ng-click="saveNormalValues('SOIL_HUMIDITY')">save</button></td>
+                                    </div>
+                                    <cite id = "soilHumidityAccess" style="color: red;text-align: right; display: block;margin-top: 10px">Not accessible</cite>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!--end of soil humidity card-->
+            </div>
+            <!--end of 1st row-->
+            <!--2nd row-->
+            <div class="row">
+                <div class="col-sm d-flex justify-content-center">
+                    <!-- starts of TEMPERATURE card-->
+                    <div class="card bg-dark shadow py-2">
+                        <div class="card-body py-0">
+                            <div class="row no-gutters align-items-center">
+                                <div>
+                                    <h5 class="text-xs font-weight-bold text-uppercase mb-1" style="color: darkred">
+                                        Temperature
+                                        <img src="../pics/temperature.png" width="30" height="50" style="margin-left: 40px">
+                                    </h5>
+                                    <h1 id = "temperatureValue" class="text-xs" style="color: grey">-</h1>
+                                    <div>
+                                        <div class="text-xs text-secondary" style="display: inline-block;margin-right: 5px">
+                                            Normal values:
+                                            <input id = "TEMPERATURE_Min" style="border:none;background: transparent;width: 35px" type="text" value="{{limits.temperature.min}}" readonly class="text-xs text-secondary">
+                                            -
+                                            <input id = "TEMPERATURE_Max" style="border:none;background: transparent;width: 35px" type="text" value="{{limits.temperature.max}}" readonly class="text-xs text-secondary">
+                                        </div>
+                                        <button id = "TEMPERATURE_EditButton" type="button" class="btn btn-success btn-sm" style="display: inline-block;margin-bottom: 4px" ng-click="editNormalValues('TEMPERATURE')">edit</button>
+                                        <td><button id = "TEMPERATURE_SaveButton" style="display: none" type="button" class="btn btn-warning btn-sm" ng-click="saveNormalValues('TEMPERATURE')">save</button></td>
+                                    </div>
+                                    <cite id = "temperatureAccess" style="color:red;text-align: right; display: block;margin-top: 10px">Not accessible</cite>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- end of temperature card-->
+                </div>
+                <div class="col-sm d-flex justify-content-center">
+                    <!-- AIR_HUMIDITY Card-->
+                    <div class="card bg-dark shadow py-2">
+                        <div class="card-body py-0">
+                            <div class="row no-gutters align-items-center">
+                                <div>
+                                    <h5 class="text-xs font-weight-bold text-uppercase mb-1" style="color: deepskyblue">
+                                        Air humidity
+                                        <img src="../pics/airHumidity.png" width="50" height="50" style="margin-left: 40px">
+                                    </h5>
+                                    <h1 id = "airHumidityValue" class="text-xs" style="color: grey">-</h1>
+                                    <div>
+                                        <div class="text-xs text-secondary" style="display: inline-block;margin-right: 5px">
+                                            Normal values:
+                                            <input id="AIR_HUMIDITY_Min" style="border:none;background: transparent;width: 35px" type="text" value="{{limits.airHumidity.min}}" readonly class="text-xs text-secondary">
+                                            -
+                                            <input id="AIR_HUMIDITY_Max" style="border:none;background: transparent;width: 35px" type="text" value="{{limits.airHumidity.max}}" readonly class="text-xs text-secondary">
+                                        </div>
+                                        <button  id ="AIR_HUMIDITY_EditButton" type="button" class="btn btn-success btn-sm" style="display: inline-block;margin-bottom: 4px" ng-click="editNormalValues('AIR_HUMIDITY')">edit</button>
+                                        <td><button id ="AIR_HUMIDITY_SaveButton" style="display: none" type="button" class="btn btn-warning btn-sm" ng-click="saveNormalValues('AIR_HUMIDITY')">save</button></td>
+                                    </div>
+                                    <cite id = "airHumidityAccess" style="color: red;text-align: right; display: block;margin-top: 10px">Not accessible</cite>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!--end of AIR_HUMIDITY card-->
+                </div>
+                <div class="col-sm d-flex justify-content-center">
+                    <!-- AIR_PRESSURE Card-->
+                    <div class="card bg-dark shadow py-2">
+                        <div class="card-body py-0">
+                            <div class="row no-gutters align-items-center">
+                                <div>
+                                    <h5 class="text-xs font-weight-bold text-uppercase mb-1" style="color: darkslateblue">
+                                        Air Pressure
+                                        <img src="../pics/airPressure.png" width="50" height="50" style="margin-left: 40px">
+                                    </h5>
+                                    <h1 id = "airPressureValue" class="text-xs" style="color: grey">-</h1>
+                                    <div>
+                                        <div class="text-xs text-secondary" style="display: inline-block;margin-right: 5px">
+                                            Normal values:
+                                            <input id="AIR_PRESSURE_Min" style="border:none;background: transparent;width: 35px" type="text" value="{{limits.airPressure.min}}" readonly class="text-xs text-secondary">
+                                            -
+                                            <input id="AIR_PRESSURE_Max" style="border:none;background: transparent;width: 35px" type="text" value="{{limits.airPressure.max}}" readonly class="text-xs text-secondary">
+                                        </div>
+                                        <button id ="AIR_PRESSURE_EditButton" type="button" class="btn btn-success btn-sm" style="display: inline-block;margin-bottom: 4px" ng-click="editNormalValues('AIR_PRESSURE')">edit</button>
+                                        <td><button id ="AIR_PRESSURE_SaveButton" style="display: none" type="button" class="btn btn-warning" ng-click="saveNormalValues('AIR_PRESSURE')">save</button></td>
+                                    </div>
+                                    <cite id = "airPressureAccess" style="color: red;text-align: right; display: block;margin-top: 10px">Not accessible</cite>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!--end of air pressure card-->
+            </div>
+            <!--end of 2nd row-->
+            <!--input Date and Time !!!-->
+            <div id="dateAndTimePicker" style="display: block;padding-left: 30%" >
+                <label for="dateAndTime" style="color: greenyellow;display: block">Choose Range : </label>
+                <img src="../pics/calendar.png"/>
+                <input id = "dateAndTime" type="text" style="width: 320px" name="daterange" value="2023-01-01 1:30:00 - 2023-01-02 2:00:00" />
+            </div>
+            <!-- end on input date and time-->
+
+            <!--start of 1 row with graphic-->
+            <div class="row">
+                <div class="col-sm d-flex justify-content-center">
+                    <!-- starts of air card-->
+                    <div class="card bg-dark chart-container">
+                        <div class="card-body">
+                            <canvas id="chart1"></canvas>
+                        </div>
+                    </div>
+                    <!-- of air card-->
+                </div>
+                <div class="col-sm d-flex justify-content-center">
+                    <!-- Light Quality Card-->
+                    <div class="card bg-dark chart-container">
+                        <div class="card-body">
+                            <canvas id="chart2"></canvas>
+                        </div>
+                    </div>
+                    <!--end of sun card-->
+                </div>
+                <div class="col-sm d-flex justify-content-center">
+                    <!-- Soil humidity Card-->
+                    <div class="card bg-dark chart-container">
+                        <div class="card-body">
+                            <canvas id="chart3"></canvas>
+                        </div>
+                    </div>
+                    <!--end of soil humidity card-->
+                </div>
+            </div>
+                <!--end of 1 row with graphic -->
+                <!--start of 2 row with graphic-->
+                <div class="row">
+                    <div class="col-sm d-flex justify-content-center">
+                        <!-- starts of temperatured-->
+                        <div class="card bg-dark chart-container">
+                            <div class="card-body">
+                                <canvas id="chart4"></canvas>
+                            </div>
+                        </div>
+                        <!-- end of temperature-->
+                    </div>
+                    <div class="col-sm d-flex justify-content-center">
+                        <!-- Air humidity Card-->
+                        <div class="card bg-dark chart-container">
+                            <div class="card-body">
+                                <canvas id="chart5"></canvas>
+                            </div>
+                        </div>
+                        <!--end of air Humidity card-->
+                    </div>
+                    <div class="col-sm d-flex justify-content-center">
+                        <!-- Air pressure Card-->
+                        <div class="card bg-dark chart-container">
+                            <div class="card-body">
+                                <canvas id="chart6"></canvas>
+                            </div>
+                        </div>
+                        <!--end of aie pressure ycard-->
+                    </div>
+                </div>
+                    <!--end of 2 row with graphic -->
+                <!--start  of 1 row with tables-->
+                <div class="row">
+                    <div class="col-sm d-flex justify-content-center">
+                        <!-- starts of air card-->
+                        <div class="card bg-dark shadow py-0" >
+                            <div class="card-body">
+                                <br>
+                                <div class="row">
+                                    <div class="col-sm">
+                                        <div class="table-wrapper py-0" id="scrollbar1">
+                                            <table class="table table-dark text-center">
+                                                <thead>
+                                                <tr>
+                                                    <th style="color: cornflowerblue">Date & Time</th>
+                                                    <th style="color: cornflowerblue">Measurement</th>
+                                                </tr>
+                                                </thead>
+                                                <tbody>
+
+                                                <tr data-ng-repeat = "aq in sensorData.airQuality">
+                                                    <td>{{aq.dataTime}}</td>
+                                                    <td>{{aq.dataValue}}</td>
+                                                </tr>
+
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- of air card-->
+                        </div>
+                    </div>
+                    <div class="col-sm d-flex justify-content-center" style="margin-left: 20px">
+                        <!-- Light Quality Card-->
+                        <div class="card bg-dark shadow py-0 " >
+                            <div class="card-body">
+                                <br>
+                                <div class="row">
+                                    <div class="col-sm">
+                                        <div class="table-wrapper py-0" id="scrollbar2">
+                                            <table class="table table-dark text-center">
+                                                <thead>
+                                                <tr>
+                                                    <th style="color: #FFC20F">Date & Time</th>
+                                                    <th style="color: #FFC20F">Measurement</th>
+                                                </tr>
+                                                </thead>
+                                                <tbody>
+
+                                                <tr data-ng-repeat = "lq in sensorData.light">
+                                                    <td>{{lq.dataTime}}</td>
+                                                    <td>{{lq.dataValue}}</td>
+                                                </tr>
+
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!--end of sun card-->
+                        </div>
+                    </div>
+                    <div class="col-sm d-flex justify-content-center" style="margin-left: 20px">
+                        <!-- Soil humidity Card-->
+                        <div class="card bg-dark shadow" >
+                            <div class="card-body">
+                                <br>
+                                <div class="row">
+                                    <div class="col-sm">
+                                        <div class="table-wrapper py-0" id="scrollbar3">
+                                            <table class="table table-dark text-center">
+                                                <thead>
+                                                <tr>
+                                                    <th style="color: saddlebrown">Date & Time</th>
+                                                    <th style="color: saddlebrown">Measurement</th>
+                                                </tr>
+                                                </thead>
+                                                <tbody>
+
+                                                <tr data-ng-repeat = "sh in sensorData.soilHumidity">
+                                                    <td>{{sh.dataTime}}</td>
+                                                    <td>{{sh.dataValue}}</td>
+                                                </tr>
+
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card-footer">
+                            </div>
+                        </div>
+                        <!--end of soil humidity card-->
+                    </div>
+                </div>
+                    <!--end 1 row with tables-->
+                    <!--start  of 2 row with tables-->
+                    <div class="row">
+                        <div class="col-sm d-flex justify-content-center">
+                            <!-- starts of temperature card-->
+                            <div class="card bg-dark shadow py-0" >
+                                <div class="card-body">
+                                    <br>
+                                    <div class="row">
+                                        <div class="col-sm">
+                                            <div class="table-wrapper py-0" id="scrollbar4">
+                                                <table class="table table-dark text-center">
+                                                    <thead>
+                                                    <tr>
+                                                        <th style="color: darkred">Date & Time</th>
+                                                        <th style="color: darkred">Measurement</th>
+                                                    </tr>
+                                                    </thead>
+                                                    <tbody>
+
+                                                    <tr data-ng-repeat = "t in sensorData.temperature">
+                                                        <td>{{t.dataTime}}</td>
+                                                        <td>{{t.dataValue}}</td>
+                                                    </tr>
+
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- end of temperature card-->
+                            </div>
+                        </div>
+                        <div class="col-sm d-flex justify-content-center" style="margin-left: 20px">
+                            <!-- air humidity  Card-->
+                            <div class="card bg-dark shadow py-0 " >
+                                <div class="card-body">
+                                    <br>
+                                    <div class="row">
+                                        <div class="col-sm">
+                                            <div class="table-wrapper py-0" id="scrollbar5">
+                                                <table class="table table-dark text-center">
+                                                    <thead>
+                                                    <tr>
+                                                        <th style="color: deepskyblue">Date & Time</th>
+                                                        <th style="color: deepskyblue">Measurement</th>
+                                                    </tr>
+                                                    </thead>
+                                                    <tbody>
+
+                                                    <tr data-ng-repeat = "ah in sensorData.airHumidity">
+                                                        <td>{{ah.dataTime}}</td>
+                                                        <td>{{ah.dataValue}}</td>
+                                                    </tr>
+
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!--end of air humidity card-->
+                            </div>
+                        </div>
+                        <div class="col-sm d-flex justify-content-center" style="margin-left: 20px">
+                            <!-- air pressure Card-->
+                            <div class="card bg-dark shadow" >
+                                <div class="card-body">
+                                    <br>
+                                    <div class="row">
+                                        <div class="col-sm">
+                                            <div class="table-wrapper py-0" id="scrollbar6">
+                                                <table class="table table-dark text-center">
+                                                    <thead>
+                                                    <tr>
+                                                        <th style="color: darkslateblue">Date & Time</th>
+                                                        <th style="color: darkslateblue">Measurement</th>
+                                                    </tr>
+                                                    </thead>
+                                                    <tbody>
+
+                                                    <tr data-ng-repeat = "ap in sensorData.airPressure">
+                                                        <td>{{ap.dataTime}}</td>
+                                                        <td>{{ap.dataValue}}</td>
+                                                    </tr>
+
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="card-footer">
+                                </div>
+                            </div>
+                            <!--end of soil humidity card-->
+                        </div>
+                    </div>
+                        <!--end row 2 with tables-->
+
+
+                        <!--end-->
+                </div>
+            </div>
+            </label>
+        <!--1st haus endet-->
+
+<!-- bildgalerie-->
+<div class="card bg-secondary text-white" style="width: 99%;margin-top: 30px">
+    <div class="card-header">
+        <div class="d-flex justify-content-center">
+            <h3 style="color: greenyellow">Gallery</h3>
+        </div>
+    </div>
+    <div class="card-body">
+
+        <form id="picUploadForm" method="POST" enctype="multipart/form-data" ng-submit="uploadFile()">
+            <input  id = "imageInput" class="form-control" type="file" multiple="multiple" accept="image/png, image/jpeg" style="margin-bottom: 20px" ng-model="file">
+            <small style="color: black"><i>File size should be smaller than 128kB.</i></small>
+        </form>
+        <output id = "imageOutput" style="margin-top: 10px">
+            <div class="image" data-ng-repeat="i in images">
+                <img ng-src="{{i.picturePath}}" alt="image">
+                <span style="color: red" ng-click="deleteImage(i.imageId)">&times;</span>
+            </div>
+        </output>
+    </div>
+</div>
+</div>
+        <!-- end of bildgalerie-->
+
+
+        <div class="container bg-dark" >
+            <footer class="d-flex flex-wrap justify-content-between align-items-center py-3 my-4 border-top">
+                <p class="col-md-4 mb-0" style="color: grey">© 2023 , Software Engineering : g5t2</p>
+
+                <div class="d-flex align-items-center" style="margin-right: 50px">
+                    <img src="../pics/logo.png" width="50" height="50" >
+                    <h2 style="color: #0F8149;margin-left: 10px"> Plant Health</h2>
+                </div>
+
+                <ul class="nav col-md-4 justify-content-end">
+                    <li class="nav-item" ><a href="#" class="nav-link px-2" style="color: grey">Home</a></li>
+                    <li class="nav-item" ><a href="#" class="nav-link px-2" style="color: grey">Accesspoints</a></li>
+                </ul>
+            </footer>
+        </div>
+    </div>
+</div>
+<!-- modal for big graphic-->
+<div class="modal" tabindex="-1" role="dialog" id="chartModal">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title"></h5>
+                <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+            </div>
+        </div>
+    </div>
+</div>
+<!-- end of modal for big graphic-->
+<!-- QR CODE -->
+<div class="print-area">
+    <div id="qrcode" style="display: inline-block;margin-top: 10px">
+    </div>
+</div>
+<script src="https://cdn.rawgit.com/davidshimjs/qrcodejs/gh-pages/qrcode.min.js"></script>
+<script type="text/javascript">
+    const queryString = window.location.search;
+    const urlParams = new URLSearchParams(queryString);
+    const id = urlParams.get('id');
+    const baseUrl = window.location.origin;
+    new QRCode(document.getElementById("qrcode"), `${baseUrl}/besucher/concreteHouse.html?id=${id}`);
+</script>
+<script type="text/javascript">
+    document.getElementById('printBtn').addEventListener('click', () => { window.print() });
+</script>
+<!-- end of QR CODE -->
+</body>
+<script
+        src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.js">
+</script>
+</html>

@@ -1,0 +1,23 @@
+# Intellij
+.idea/
+*.iml
+*.iws
+
+# VS Code
+settings.json
+ 
+# Mac
+.DS_Store
+ 
+# Maven
+log/
+target/
+
+# Project
+db/data/
+config.yaml
+accesspoint.db
+
+# Python
+__pycache__/
+*.pyc

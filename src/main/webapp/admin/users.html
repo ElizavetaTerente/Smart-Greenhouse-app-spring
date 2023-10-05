@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html data-ng-app="appAdminUsers" lang="en">
+<!-- Bootstrap CSS -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJOZ" crossorigin="anonymous">
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ENjdO4Dr2bkBIFxQpeoTz1HIcje39Wm4jDKdf19U8gI4ddQ3GYNS7NTKfAdVQSZe" crossorigin="anonymous"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.js"></script>
+<head>
+    <title>PlantHealth</title>
+    <script src="users.js"></script>
+    <link rel="shortcut icon" href="../pics/logo.png" type="image/x-icon">
+    <meta charset="UTF-8">
+    <title>PlantHealth</title>
+    <style>
+    </style>
+    <script>
+        function goToHome() {
+            window.location.href = window.location.origin + "/admin/index.html";
+        }
+
+        function goToAllHouses() {
+            window.location.href = window.location.origin + "/admin/allHouses.html";
+        }
+
+        function goToAccesspoints() {
+            window.location.href = window.location.origin + "/admin/accesspoints.html";
+        }
+
+        function goToAuditLog() {
+            window.location.href = window.location.origin + "/admin/auditLog.html";
+        }
+    </script>
+
+</head>
+<header class="p-3 text-bg-dark" style="margin-bottom: 30px">
+    <div class="container">
+        <div class="d-flex flex-wrap align-items-center ">
+            <div class="d-flex align-items-center" style="margin-right: 50px">
+                <img src="../pics/logo.png" width="50" height="50" >
+                <h2 style="color: #0F8149;margin-left: 10px"> Plant Health</h2>
+            </div>
+            <ul class="nav nav-pills nav-fill gap-2 p-1 bg-secondary rounded-5 shadow-sm " id="pillNav2" role="tablist" style="--bs-nav-link-color: white; --bs-nav-pills-link-active-color: white; --bs-nav-pills-link-active-bg: #0F8149;">
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link rounded-5" data-bs-toggle="tab" type="button" role="tab" aria-selected="true" onclick="goToHome()">Home</button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link rounded-5" data-bs-toggle="tab" type="button" role="tab" aria-selected="true" onclick="goToAllHouses()">All Houses</button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link rounded-5" data-bs-toggle="tab" type="button" role="tab" aria-selected="false" onclick="goToAccesspoints()">Accesspoints</button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link active rounded-5" data-bs-toggle="tab" type="button" role="tab" aria-selected="false" >Users</button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link rounded-5" data-bs-toggle="tab" type="button" role="tab" aria-selected="true" onclick="goToAuditLog()">AuditLog</button>
+                </li>
+            </ul>
+
+            <div style="position:absolute; right:30px; margin-right: 40px">
+                <a href="/logout" class="btn btn-outline-light me-2" role="button">Log out</a>
+            </div>
+        </div>
+    </div>
+</header>
+<body class="p-5 mb-2 bg-dark text-white" >
+<div class="container" data-ng-controller ="adminUsers">
+<p>
+    <button id = "addUserButton" class="btn btn-success btn-lg " style="margin-left: 30px;margin-bottom: 20px" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFormNewUser" aria-expanded="false" aria-controls="collapseFormNewUser">
+        Add new User
+    </button>
+</p>
+        <div class="collapse" id="collapseFormNewUser" style="width:50%;margin: auto;margin-bottom: 30px">
+            <form id = "addNewUserForm" ng-submit="addNewUser()">
+                <div class="mb-3">
+                    <label for="username" class="form-label">Username</label>
+                    <input type="text" class="form-control" id="username" data-ng-model="newUser.username" required>
+                </div>
+                <div class="mb-3">
+                    <label for="password" class="form-label">Password</label>
+                    <input type="password" class="form-control" id="password" data-ng-model="newUser.password" required>
+                </div>
+                <div class="mb-3">
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" name="roleRadio" id="roleAdmin" value="ADMIN">
+                        <label class="form-check-label" for="roleAdmin">Admin</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" name="roleRadio" id="roleGardener" value="GARDENER">
+                        <label class="form-check-label" for="roleGardener">Gardener</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" name="roleRadio" id="roleUser" value="USER">
+                        <label class="form-check-label" for="roleUser">User</label>
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <label for="firstName" class="form-label">First Name</label>
+                    <input type="text" class="form-control" id="firstName" data-ng-model="newUser.firstName" required>
+                </div>
+                <div class="mb-3">
+                    <label for="lastName" class="form-label">Last Name</label>
+                    <input type="text" class="form-control" id="lastName" data-ng-model="newUser.lastName" required>
+                </div>
+                <div class="mb-3">
+                    <label for="Email" class="form-label">Email</label>
+                    <input type="text" class="form-control" id="email" data-ng-model="newUser.email" required>
+                </div>
+                <div class="mb-3">
+                    <label for="phone" class="form-label">Phone</label>
+                    <input type="text" class="form-control" id="phone" data-ng-model="newUser.phone" required>
+                </div>
+                <button type="submit" class="btn btn-success">Submit</button>
+                <button id = "Close" class="btn btn-outline-success" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFormNewUser" aria-expanded="false" aria-controls="collapseFormNewUser">
+                    close
+                </button>
+            </form>
+        </div>
+        <div class="card bg-secondary text-white">
+        <div class="card-body" >
+            <div class="form-outline form-white" style="margin-bottom: 30px;">
+                <h6 style="display:inline">Search user:</h6>
+                <input style="display:inline" data-ng-model="search.username"/>
+            </div>
+            <table id = "users_table" class="table table-hover text-white">
+                <caption></caption>
+                <thead>
+                <tr>
+                    <th >Username <button id="sort_username" type="button" class="btn btn-outline-info btn-sm" ng-click="sortUsername()"> ^ </button></th>
+                    <th>Role(s)</th>
+                    <th>Last Name <button id="sort_lastName" type="button" class="btn btn-outline-info btn-sm" ng-click="sortLastName()"> ^ </button></th>
+                    <th>First Name <button id="sort_firstName" type="button" class="btn btn-outline-info btn-sm" ng-click="sortFirstName()"> ^ </button></th>
+                    <th>Email <button id="sort_email" type="button" class="btn btn-outline-info btn-sm" ng-click="sortEmail()"> ^ </button></th>
+                    <th>Phone<button id="sort_phone" type="button" class="btn btn-outline-info btn-sm" ng-click="sortPhone()"> ^ </button></th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr data-ng-repeat = "u in usersList | filter:search | orderBy : pr">
+                    <td><input style="border:none;background: transparent;width:120px" type="text" value="{{u.username}}" readonly></td>
+                    <td ng-init="checkedFunc(u.roles,$index + 1)">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="adminCheckBox" value="option1"  disabled/>
+                            <label style="color:black" class="form-check-label" for="adminCheckBox">Admin</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="gardenerCheckBox" value="option2"  disabled/>
+                            <label style="color:black" class="form-check-label" for="gardenerCheckBox">Gardener</label>
+                        </div>
+                        <div class="form-check" >
+                            <input class="form-check-input" type="checkbox" id="userCheckBox" value="option3"  disabled/>
+                            <label style="color:black" class="form-check-label" for="userCheckBox">User</label>
+                        </div>
+                    </td>
+
+                    <td><input style="border:none;background: transparent;width:120px" type="text" value="{{u.lastName}}" readonly></td>
+                    <td><input style="border:none;background: transparent;width:120px" type="text" value="{{u.firstName}}" readonly></td>
+                    <td><input style="border:none;background: transparent;width:170px" type="text" value="{{u.email}}" readonly></td>
+                    <td><input style="border:none;background: transparent;width:140px" type="text" value="{{u.phone}}" readonly></td>
+                    <td><button style="display: none" type="button" class="btn btn-warning" ng-click="saveUser(u.username,$index + 1)">save</button></td>
+                    <td><button type="button" class="btn btn-success" ng-click="editUser(u.username,$index+1)">edit</button></td>
+                    <td><button type="button" class="btn btn-danger" ng-click="deleteUser(u.username)">delete</button></td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+        </div>
+
+</div>
+</div>
+<div class="container bg-dark" >
+    <footer class="d-flex flex-wrap justify-content-between align-items-center py-3 my-4 border-top">
+        <p class="col-md-4 mb-0" style="color: grey">© 2023 , Software Engineering : g5t2</p>
+
+        <div class="d-flex align-items-center" style="margin-right: 50px">
+            <img src="../pics/logo.png" width="50" height="50" >
+            <h2 style="color: #0F8149;margin-left: 10px"> Plant Health</h2>
+        </div>
+
+        <ul class="nav col-md-4 justify-content-end">
+            <li class="nav-item"><a href="/admin/index.html" class="nav-link px-2" style="color: grey">Home</a></li>
+            <li class="nav-item"><a href="/admin/allHouses.html" class="nav-link px-2" style="color: grey">All Houses</a></li>
+            <li class="nav-item"><a href="/admin/accesspoints.html" class="nav-link px-2" style="color: grey">Accesspoints</a></li>
+            <li class="nav-item"><a href="/admin/users.html" class="nav-link px-2" style="color: grey">Users</a></li>
+            <li class="nav-item"><a href="/admin/auditLog.html" class="nav-link px-2" style="color: grey">AuditLog</a></li>
+        </ul>
+    </footer>
+</div>
+</div>
+</body>
+</html>

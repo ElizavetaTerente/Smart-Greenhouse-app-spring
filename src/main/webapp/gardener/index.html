@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html data-ng-app="appIndex" lang="en">
+<!-- Include Required Prerequisites -->
+<script type="text/javascript" src="//cdn.jsdelivr.net/jquery/1/jquery.min.js"></script>
+<script type="text/javascript" src="//cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
+
+<!-- Include Date Range Picker -->
+<script type="text/javascript" src="//cdn.jsdelivr.net/bootstrap.daterangepicker/2/daterangepicker.js"></script>
+<link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/bootstrap.daterangepicker/2/daterangepicker.css" />
+<!-- Bootstrap CSS -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJOZ" crossorigin="anonymous">
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ENjdO4Dr2bkBIFxQpeoTz1HIcje39Wm4jDKdf19U8gI4ddQ3GYNS7NTKfAdVQSZe" crossorigin="anonymous"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.js"></script>
+<head>
+    <title>PlantHealth</title>
+    <script src="index.js"></script>
+    <link rel="shortcut icon" href="../pics/logo.png" type="image/x-icon">
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        .card {
+            margin: 0 auto; /* Added */
+            float: none; /* Added */
+            margin-bottom: 10px; /* Added */
+            margin-top: 10px; /* Added */
+            color: grey;
+        }
+
+        .table-wrapper {
+            max-height: 200px;
+            overflow: auto;
+        }
+
+        ::-webkit-scrollbar {
+            width: 10px;
+        }
+
+        /* Track */
+        ::-webkit-scrollbar-track {
+            background: #555;
+        }
+
+        /* Handle */
+        #scrollbar1::-webkit-scrollbar-thumb {
+            background: cornflowerblue;
+        }
+
+        #scrollbar2::-webkit-scrollbar-thumb {
+            background: #FFC20F;
+        }
+
+        #scrollbar3::-webkit-scrollbar-thumb {
+            background: saddlebrown;
+        }
+
+        /* Handle on hover */
+        ::-webkit-scrollbar-thumb:hover {
+            background: #888;
+        }
+
+        .nav > li > button:hover{
+            color:greenyellow;
+        }
+
+        .checkbox-lg .form-check-input{
+            top: .8rem;
+            scale: 1.4;
+            margin-right: 0.7rem;
+        }
+
+        .checkbox-lg .form-check-label {
+            padding-top: 13px;
+        }
+
+        .checkbox-lg .form-check-label-color {
+            color: green;
+        }
+        output{
+            width: 100%;
+            display: flex;
+            justify-content: flex-start;
+            flex-wrap: wrap;
+            gap: 15px;
+            position: relative;
+            border-radius: 5px;
+        }
+
+        output .image{
+            height: 150px;
+            border-radius: 5px;
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.15);
+            overflow: hidden;
+            position: relative;
+        }
+
+        output .image img{
+            height: 100%;
+            width: 100%;
+        }
+
+        output .image span {
+            position: absolute;
+            top: -4px;
+            right: 4px;
+            cursor: pointer;
+            font-size: 22px;
+            color: white;
+        }
+
+        output .image span:hover {
+            opacity: 0.8;
+        }
+
+        output .span--hidden{
+            visibility: hidden;
+        }
+
+        .modal-header{
+            background-color: #6c757d;
+        }
+        .modal-body{
+            background-color: #6c757d;
+        }
+
+    </style>
+    <script>
+        function goToHome(){
+            window.location.href = window.location.origin + "/gardener/index.html";
+        }
+
+        function goToAccesspoints(){
+            window.location.href = window.location.origin + "/gardener/accesspoints.html";
+        }
+    </script>
+
+</head>
+<header class="p-3 text-bg-dark" style="margin-bottom: 30px">
+    <div class="container">
+        <div class="d-flex flex-wrap align-items-center ">
+            <div class="d-flex align-items-center" style="margin-right: 20%">
+                <img src="../pics/logo.png" width="50" height="50" >
+                <h2 style="color: #0F8149;margin-left: 10px"> Plant Health</h2>
+            </div>
+            <ul class="nav nav-pills nav-fill gap-2 p-1 bg-secondary rounded-5 shadow-sm " id="pillNav2" role="tablist" style="--bs-nav-link-color: white; --bs-nav-pills-link-active-color: white; --bs-nav-pills-link-active-bg: #0F8149;">
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link active rounded-5" id="Home-tab2" data-bs-toggle="tab" type="button" role="tab" aria-selected="false" onclick="goToHome()">My Houses</button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link rounded-5" id="Accesspoints-tab2" data-bs-toggle="tab" type="button" role="tab" aria-selected="false" onclick="goToAccesspoints()">Accesspoints</button>
+                </li>
+            </ul>
+
+            <div style="position:absolute; right:30px; margin-right: 40px">
+                <a href="/logout" class="btn btn-outline-light me-2" role="button">Log out</a>
+            </div>
+        </div>
+    </div>
+</header>
+<body class="p-5 mb-2 bg-dark text-white">
+<div class="container" data-ng-controller ="indexView">
+
+    <!-- haus-->
+    <div ng-if="ss.length!=0" style="display: inline-block;margin-left: 20%">
+        <cite style="color: yellowgreen">Hint : to the page of a particular house, click on corresponding id button </cite>
+        <img src="../pics/partHouse.png" height="100">
+    </div>
+    <div id = "repeat" class="card bg-secondary text-white" style="width: 99%;margin-bottom: 30px" ng-repeat="s in ss">
+        <div class="card-header">
+            <div class="d-flex justify-content-between align-items-center" style="display: inline-block">
+                <div>
+                    <h5 style="display:inline-block;color: greenyellow">ID : </h5>
+                    <button style="display:inline-block" type="button" class="btn btn-success" ng-click="goToConcreteHouseSeite(s.house.sensorStationId)">{{s.house.sensorStationId}}</button>
+                </div>
+                <div>
+                    <h5 style="display:inline-block;">UUID : {{s.house.universallyUniqueIdentifier}}</h5>
+                    <p ng-hide="s.house.universallyUniqueIdentifier != null" style="display: inline-block">no uuid</p>
+                </div>
+                <div>
+                    <h5 style="display:inline-block;">Name : {{s.house.sensorStationName}}</h5>
+                    <p ng-hide="s.house.sensorStationName != null" style="display: inline-block">no name</p>
+                </div>
+                <div>
+                    <h5 style="display: inline-block">
+                        <cite >Accesspoint : </cite>
+                        <cite ng-if="s.house.accessible" style="color: greenyellow">Accessible</cite>
+                        <cite ng-if="!s.house.accessible" style="color: darkred">Not Accessible</cite>
+                    </h5>
+                </div>
+            </div>
+        </div>
+
+        <div class="card-body" ng-init="takeSensorsData(s.house.sensorStationId,s.accesspoint,s.house.accessible,$index + 1)">
+            <!-- start-- -->
+            <div class="row">
+                <div class="col-sm d-flex justify-content-center">
+                    <!-- starts of air card-->
+                    <div class="card bg-dark shadow py-2">
+                        <div class="card-body py-0">
+                            <div class="row no-gutters align-items-center">
+                                <div>
+                                    <h5 class="text-xs font-weight-bold text-uppercase mb-1" style="color: cornflowerblue">
+                                        Air Quality
+                                        <img src="../pics/air.png" width="50" height="50" style="margin-left: 40px">
+                                    </h5>
+                                    <h1 id = "airQualityValue" class="text-xs" style="color: grey">-</h1>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- of air card-->
+                </div>
+                <div class="col-sm d-flex justify-content-center">
+                    <!-- Light Quality Card-->
+                    <div class="card bg-dark shadow py-2">
+                        <div class="card-body py-0">
+                            <div class="row no-gutters align-items-center">
+                                <div>
+                                    <h5 class="text-xs font-weight-bold text-uppercase mb-1" style="color: #FFC20F">
+                                        Light Quality
+                                        <img src="../pics/sun.png" width="50" height="50" style="margin-left: 40px">
+                                    </h5>
+                                    <h1 id = "lightValue" class="text-xs" style="color: grey">-</h1>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!--end of sun card-->
+                </div>
+                <div class="col-sm d-flex justify-content-center">
+                    <!-- Soil humidity Card-->
+                    <div class="card bg-dark shadow py-2">
+                        <div class="card-body py-0">
+                            <div class="row no-gutters align-items-center">
+                                <div>
+                                    <h5 class="text-xs font-weight-bold text-uppercase mb-1" style="color: saddlebrown">
+                                        Soil humidity
+                                        <img src="../pics/soil.png" width="50" height="50" style="margin-left: 40px">
+                                    </h5>
+                                    <h1 id = "soilHumidityValue" class="text-xs" style="color: grey">-</h1>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!--end of soil humidity card-->
+            </div>
+            <!--2nd row-->
+            <div class="row">
+                <div class="col-sm d-flex justify-content-center">
+                    <!-- starts of TEMPERATURE card-->
+                    <div class="card bg-dark shadow py-2">
+                        <div class="card-body py-0">
+                            <div class="row no-gutters align-items-center">
+                                <div>
+                                    <h5 class="text-xs font-weight-bold text-uppercase mb-1" style="color: darkred">
+                                        Temperature
+                                        <img src="../pics/temperature.png" width="30" height="50" style="margin-left: 40px">
+                                    </h5>
+                                    <h1 id = "temperatureValue" class="text-xs" style="color: grey">-</h1>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- end of temperature card-->
+                </div>
+                <div class="col-sm d-flex justify-content-center">
+                    <!-- AIR_HUMIDITY Card-->
+                    <div class="card bg-dark shadow py-2">
+                        <div class="card-body py-0">
+                            <div class="row no-gutters align-items-center">
+                                <div>
+                                    <h5 class="text-xs font-weight-bold text-uppercase mb-1" style="color: deepskyblue">
+                                        Air humidity
+                                        <img src="../pics/airHumidity.png" width="50" height="50" style="margin-left: 40px">
+                                    </h5>
+                                    <h1 id = "airHumidityValue" class="text-xs" style="color: grey">-</h1>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!--end of AIR_HUMIDITY card-->
+                </div>
+                <div class="col-sm d-flex justify-content-center">
+                    <!-- AIR_PRESSURE Card-->
+                    <div class="card bg-dark shadow py-2">
+                        <div class="card-body py-0">
+                            <div class="row no-gutters align-items-center">
+                                <div>
+                                    <h5 class="text-xs font-weight-bold text-uppercase mb-1" style="color: darkslateblue">
+                                        Air Pressure
+                                        <img src="../pics/airPressure.png" width="50" height="50" style="margin-left: 40px">
+                                    </h5>
+                                    <h1 id = "airPressureValue" class="text-xs" style="color: grey">-</h1>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!--end of air pressure card-->
+            </div>
+            <!--end of 2nd row-->
+            <!--end-->
+        </div>
+    </div>
+    </label>
+</div>
+
+</div>
+<!--haus endet-->
+
+<div class="container bg-dark" >
+    <footer class="d-flex flex-wrap justify-content-between align-items-center py-3 my-4 border-top">
+        <p class="col-md-4 mb-0" style="color: grey">© 2023 , Software Engineering : g5t2</p>
+
+        <div class="d-flex align-items-center" style="margin-right: 50px">
+            <img src="../pics/logo.png" width="50" height="50" >
+            <h2 style="color: #0F8149;margin-left: 10px"> Plant Health</h2>
+        </div>
+
+        <ul class="nav col-md-4 justify-content-end">
+            <li class="nav-item" ><a href="#" class="nav-link px-2" style="color: grey">My Houses</a></li>
+            <li class="nav-item" ><a href="#" class="nav-link px-2" style="color: grey">Accesspoints</a></li>
+        </ul>
+    </footer>
+</div>
+</div>
+</div>
+</body>
+<script
+        src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.js">
+</script>
+<script>
+</script>
+</html>

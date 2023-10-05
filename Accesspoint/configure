@@ -1,0 +1,82 @@
+#!/bin/bash
+
+
+CONFIG_FILE="config.yaml"
+APP_FILE="main.py"
+APP_DIR="$(dirname "$(readlink -f "$0")")"
+APP_PATH="${APP_DIR}/${APP_FILE}"
+REQUIREMENTS="${APP_DIR}/requirements.txt"
+LOG_PATH="${APP_DIR}/log_stdout.log"
+ERROR_LOG_PATH="${APP_DIR}/log_stderr.log"
+CRON_JOB="@reboot cd $APP_DIR && python3 -u $APP_PATH > $LOG_PATH 2> $ERROR_LOG_PATH"
+
+# Install Python requirements
+if [ -f "$REQUIREMENTS" ]; then
+    echo "Installing Python requirements..."
+    pip3 install -r $REQUIREMENTS
+else
+    echo "No requirements.txt file found. Skipping Python requirements installation."
+fi
+
+# Check if the application is already set to run at startup
+if crontab -l | grep -q "$CRON_JOB"; then
+    echo "The application is already configured to run at startup."
+else
+    echo "The application is not configured to run at startup."
+    read -p "Do you want to configure it to run at startup? (y/n) " -n 1 -r
+    echo
+    if [[ $REPLY =~ ^[Yy]$ ]]; then
+        (crontab -l; echo "$CRON_JOB") | crontab -
+        echo "The application is now configured to run at startup."
+    fi
+fi
+
+if [ -f "$CONFIG_FILE" ]; then
+    echo "Config file already exists."
+    read -p "Do you want to overwrite it? (y/n) " -n 1 -r
+    echo
+    if [[ ! $REPLY =~ ^[Yy]$ ]]; then
+        echo "Starting Python application..."
+        python3 $APP_PATH
+        exit 0
+    fi
+fi
+
+echo "Please enter the required data:"
+
+echo "Enter the address of the Webserver:"
+read address
+
+echo "Enter a name for the building or room where the Accesspoint is located:"
+read name
+
+echo "Enter your username:"
+read username
+
+echo "Enter your password:"
+read -s password
+
+echo "Enter the Accesspoint ID (leave empty if not available):"
+read accesspoint_id
+
+if [ -z "$accesspoint_id" ]; then
+cat << EOF > $CONFIG_FILE
+address: "$address"
+location_name: "$name"
+username: "$username"
+password: "$password"
+EOF
+else
+cat << EOF > $CONFIG_FILE
+address: "$address"
+location_name: "$name"
+username: "$username"
+password: "$password"
+accesspoint_id: "$accesspoint_id"
+EOF
+fi
+
+echo "Data written to $CONFIG_FILE"
+
+echo "Starting Python application..."
+python3 $APP_PATH
